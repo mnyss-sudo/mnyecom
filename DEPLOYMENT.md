@@ -1,6 +1,19 @@
 # Cloudflare deployment
 
-This repo includes **`wrangler.toml`** with production Supabase URL, anon key, site URL, and admin email. Cloudflare Pages should pick these up on the next Git deploy. You can still mirror them in the dashboard if needed.
+This app deploys with **[@opennextjs/cloudflare](https://opennext.js.org/cloudflare)** (not plain `next build` + static export).
+
+## Pages build settings
+
+In **Cloudflare Pages → your project → Settings → Builds**, set:
+
+| Setting | Value |
+|---------|--------|
+| **Build command** | `npm run build:cf` |
+| **Build output directory** | *(leave empty — `wrangler.toml` defines the worker + assets)* |
+
+If the dashboard still runs `wrangler deploy` after the build, that is expected once `.open-next/` exists.
+
+`wrangler.toml` also sets production env vars (`NEXT_PUBLIC_*`, `ADMIN_EMAIL`). You can mirror them under **Environment variables** if needed.
 
 | Variable | Value |
 |----------|--------|

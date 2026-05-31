@@ -1,0 +1,12 @@
+# Cloudflare Pages — environment variables for production builds & runtime.
+# Docs: https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+
+name = "mnyecom"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+NEXT_PUBLIC_SUPABASE_URL = "https://ejlfcwjbmeczqtowsccm.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqbGZjd2pibWVjenF0b3dzY2NtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMDkyOTUsImV4cCI6MjA5NTc4NTI5NX0.hMyyQ8JT83LYC_cWsnFYfKHzUPm9svxEA_az-3OdpLo"
+NEXT_PUBLIC_SITE_URL = "https://mnyecom.pages.dev"
+ADMIN_EMAIL = ""

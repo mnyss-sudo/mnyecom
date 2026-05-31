@@ -1,6 +1,8 @@
 # Cloudflare deployment
 
-Add these **environment variables** in your Cloudflare Pages project (Settings → Environment variables):
+This repo includes **`wrangler.toml`** with production Supabase URL, anon key, and site URL. Cloudflare Pages should pick these up on the next Git deploy. You can still mirror them in the dashboard if needed.
+
+Add these **environment variables** in your Cloudflare Pages project (Settings → Environment variables) if not using `wrangler.toml`:
 
 | Variable | Value |
 |----------|--------|

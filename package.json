@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/build.mjs",
+    "build:next": "next build",
     "build:cf": "opennextjs-cloudflare build",
     "preview:cf": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "start": "next start",
     "lint": "next lint",
     "supabase:auth-urls": "node scripts/set-supabase-auth-urls.mjs"
@@ -20,10 +22,11 @@
     "next": "^15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "zustand": "^5.0.5"
+    "zustand": "^5.0.5",
+    "@opennextjs/cloudflare": "^1.16.0",
+    "wrangler": "^4.20.0"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.16.0",
     "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.1.8",
     "@types/node": "^22.15.21",
@@ -32,7 +35,6 @@
     "eslint": "^9.27.0",
     "eslint-config-next": "^15.3.3",
     "tailwindcss": "^4.1.8",
-    "typescript": "^5.8.3",
-    "wrangler": "^4.20.0"
+    "typescript": "^5.8.3"
   }
 }

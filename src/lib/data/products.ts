@@ -1,16 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Category, Product } from "@/types/database";
 import { demoCategories, demoProducts } from "@/lib/data/demo";
 
-function useDemoData() {
-  return (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
-}
-
 export async function getCategories(): Promise<Category[]> {
-  if (useDemoData()) return demoCategories;
+  if (!isSupabaseConfigured()) return demoCategories;
 
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -23,7 +17,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  if (useDemoData()) {
+  if (!isSupabaseConfigured()) {
     return demoCategories.find((c) => c.slug === slug) ?? null;
   }
 
@@ -37,7 +31,7 @@ export async function getProducts(options?: {
   featured?: boolean;
   limit?: number;
 }): Promise<Product[]> {
-  if (useDemoData()) {
+  if (!isSupabaseConfigured()) {
     let items = [...demoProducts];
     if (options?.categorySlug) {
       const cat = demoCategories.find((c) => c.slug === options.categorySlug);
@@ -72,7 +66,7 @@ export async function getProducts(options?: {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  if (useDemoData()) {
+  if (!isSupabaseConfigured()) {
     return demoProducts.find((p) => p.slug === slug) ?? null;
   }
 

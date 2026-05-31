@@ -1,0 +1,11 @@
+# Supabase local config — use `supabase link` + `supabase config push` with CLI login.
+# Project: ejlfcwjbmeczqtowsccm
+
+[auth]
+site_url = "https://mnyecom.pages.dev"
+additional_redirect_urls = [
+  "https://mnyecom.pages.dev/auth/callback",
+  "https://mnyecom.pages.dev/**",
+  "http://localhost:3000/**",
+  "http://127.0.0.1:3000/**",
+]

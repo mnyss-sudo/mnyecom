@@ -11,10 +11,16 @@ This repo includes **`wrangler.toml`** with production Supabase URL, anon key, s
 
 ## Supabase Auth redirect
 
-In [Supabase Dashboard](https://supabase.com/dashboard/project/ejlfcwjbmeczqtowsccm/auth/url-configuration):
+Set these in [URL Configuration](https://supabase.com/dashboard/project/ejlfcwjbmeczqtowsccm/auth/url-configuration):
 
 - **Site URL:** `https://mnyecom.pages.dev`
 - **Redirect URLs:** `https://mnyecom.pages.dev/auth/callback`
+
+**Automated option:** add a [personal access token](https://supabase.com/dashboard/account/tokens) to `.env.local` as `SUPABASE_ACCESS_TOKEN=sbp_...`, then run:
+
+```bash
+node scripts/set-supabase-auth-urls.mjs
+```
 
 ## Admin access
 

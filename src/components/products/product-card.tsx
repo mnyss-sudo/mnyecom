@@ -26,7 +26,7 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
       <div className="flex flex-1 flex-col p-4">
         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-          {(product.categories as { name?: string } | null)?.name ?? "Product"}
+          {product.category}
         </p>
         <Link href={`/products/${product.slug}`}>
           <h3 className="mt-1 font-semibold text-slate-900 group-hover:text-brand-700">

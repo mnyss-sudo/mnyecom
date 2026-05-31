@@ -46,7 +46,7 @@ export function CheckoutForm() {
   return (
     <form action={handleSubmit} className="space-y-8">
       <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900">Shipping information</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Delivery information</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <Label htmlFor="name">Full name</Label>
@@ -57,6 +57,10 @@ export function CheckoutForm() {
             <Input id="email" name="email" type="email" required autoComplete="email" />
           </div>
           <div className="sm:col-span-2">
+            <Label htmlFor="phone">Phone</Label>
+            <Input id="phone" name="phone" type="tel" autoComplete="tel" />
+          </div>
+          <div className="sm:col-span-2">
             <Label htmlFor="address">Address</Label>
             <Input id="address" name="address" required autoComplete="street-address" />
           </div>
@@ -65,23 +69,19 @@ export function CheckoutForm() {
             <Input id="city" name="city" required autoComplete="address-level2" />
           </div>
           <div>
-            <Label htmlFor="postal">Postal code</Label>
-            <Input id="postal" name="postal" required autoComplete="postal-code" />
-          </div>
-          <div className="sm:col-span-2">
             <Label htmlFor="country">Country</Label>
-            <Input id="country" name="country" defaultValue="United States" required />
+            <Input id="country" name="country" defaultValue="Pakistan" required />
           </div>
         </div>
       </section>
 
       <section className="rounded-2xl border border-slate-100 bg-slate-50 p-6">
         <div className="flex justify-between text-lg font-semibold">
-          <span>Order total</span>
+          <span>Order total (COD)</span>
           <span>{formatPrice(total)}</span>
         </div>
         <p className="mt-2 text-sm text-slate-500">
-          {items.length} item{items.length !== 1 ? "s" : ""} · Demo checkout (no payment processor)
+          {items.length} item{items.length !== 1 ? "s" : ""} · Cash on delivery
         </p>
       </section>
 

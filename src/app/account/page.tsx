@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/app/account/actions";
+import { isAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "My Account",
@@ -19,18 +20,22 @@ export default async function AccountPage() {
 
   if (!user) redirect("/auth/login?redirect=/account");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+  const admin = await isAdmin();
 
-  const { data: orders } = await supabase
-    .from("orders")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(10);
+  const { data: customer } = await supabase
+    .from("customers")
+    .select("id")
+    .eq("email", user.email ?? "")
+    .maybeSingle();
+
+  const { data: orders } = customer
+    ? await supabase
+        .from("orders")
+        .select("*")
+        .eq("customer_id", customer.id)
+        .order("created_at", { ascending: false })
+        .limit(10)
+    : { data: [] };
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
@@ -38,9 +43,6 @@ export default async function AccountPage() {
         <div>
           <h1 className="text-3xl font-bold text-slate-900">My account</h1>
           <p className="mt-1 text-slate-600">{user.email}</p>
-          {profile?.full_name && (
-            <p className="text-sm text-slate-500">{profile.full_name}</p>
-          )}
         </div>
         <form action={signOut}>
           <Button type="submit" variant="secondary">
@@ -52,7 +54,7 @@ export default async function AccountPage() {
       <section className="mt-10">
         <h2 className="text-lg font-semibold text-slate-900">Order history</h2>
         {!orders?.length ? (
-          <p className="mt-4 text-slate-500">No orders yet.</p>
+          <p className="mt-4 text-slate-500">No orders yet for this email.</p>
         ) : (
           <ul className="mt-4 space-y-3">
             {orders.map((order) => (
@@ -61,17 +63,17 @@ export default async function AccountPage() {
                 className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-100 bg-white px-4 py-3"
               >
                 <div>
-                  <p className="font-mono text-xs text-slate-500">{order.id.slice(0, 8)}…</p>
-                  <p className="text-sm capitalize text-slate-600">{order.status}</p>
+                  <p className="font-medium text-slate-900">{order.order_number}</p>
+                  <p className="text-sm text-slate-600">{order.order_status}</p>
                 </div>
-                <p className="font-semibold">{formatPrice(order.total)}</p>
+                <p className="font-semibold">{formatPrice(Number(order.total))}</p>
               </li>
             ))}
           </ul>
         )}
       </section>
 
-      {profile?.is_admin && (
+      {admin && (
         <Link href="/admin" className="mt-8 inline-block">
           <Button variant="secondary">Go to admin dashboard</Button>
         </Link>

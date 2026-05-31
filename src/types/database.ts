@@ -15,45 +15,48 @@ export type Product = {
   price: number;
   compare_at_price: number | null;
   image_url: string | null;
-  category_id: string | null;
+  category: string;
+  category_slug: string;
+  brand: string | null;
   stock: number;
   featured: boolean;
+  active: boolean;
   created_at: string;
-  categories?: Category | null;
 };
 
-export type Profile = {
+export type Customer = {
   id: string;
-  email: string | null;
-  full_name: string | null;
-  is_admin: boolean;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+  country: string | null;
   created_at: string;
 };
-
-export type OrderStatus = "pending" | "paid" | "shipped" | "delivered" | "cancelled";
 
 export type Order = {
   id: string;
-  user_id: string;
-  status: OrderStatus;
+  customer_id: string | null;
+  order_number: string;
+  subtotal: number;
+  shipping_cost: number;
   total: number;
-  shipping_name: string;
-  shipping_email: string;
-  shipping_address: string;
-  shipping_city: string;
-  shipping_postal: string;
-  shipping_country: string;
+  payment_method: string | null;
+  payment_status: string | null;
+  order_status: string;
+  notes: string | null;
   created_at: string;
+  customers?: Customer | null;
 };
 
 export type OrderItem = {
   id: string;
   order_id: string;
   product_id: string;
-  product_name: string;
-  product_slug: string;
   quantity: number;
   unit_price: number;
+  total_price: number;
 };
 
 export type CartItem = {

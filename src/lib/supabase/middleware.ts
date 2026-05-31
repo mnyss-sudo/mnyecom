@@ -1,6 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+function isAdminEmail(email: string | undefined) {
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  return Boolean(adminEmail && email?.toLowerCase() === adminEmail);
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -36,21 +41,19 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (!user && pathname === "/checkout") {
-    const url = request.nextUrl.clone();
-    url.pathname = "/auth/login";
-    url.searchParams.set("redirect", "/checkout");
-    return NextResponse.redirect(url);
-  }
-
   if (user && pathname.startsWith("/admin")) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("is_admin")
-      .eq("id", user.id)
-      .single();
+    let allowed = isAdminEmail(user.email);
 
-    if (!profile?.is_admin) {
+    if (!allowed) {
+      const { data } = await supabase
+        .from("admins")
+        .select("email")
+        .eq("email", user.email ?? "")
+        .maybeSingle();
+      allowed = Boolean(data);
+    }
+
+    if (!allowed) {
       const url = request.nextUrl.clone();
       url.pathname = "/";
       return NextResponse.redirect(url);

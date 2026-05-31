@@ -10,17 +10,21 @@ export async function getSessionUser() {
   return user;
 }
 
-export async function getProfile() {
-  if (!isSupabaseConfigured()) return null;
+export async function isAdmin() {
   const user = await getSessionUser();
-  if (!user) return null;
+  if (!user?.email) return false;
+
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  if (adminEmail && user.email.toLowerCase() === adminEmail) {
+    return true;
+  }
 
   const supabase = await createClient();
-  const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-  return data;
-}
+  const { data } = await supabase
+    .from("admins")
+    .select("email")
+    .eq("email", user.email)
+    .maybeSingle();
 
-export async function isAdmin() {
-  const profile = await getProfile();
-  return profile?.is_admin === true;
+  return Boolean(data);
 }

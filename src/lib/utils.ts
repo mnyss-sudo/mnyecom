@@ -4,10 +4,11 @@ export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
 
-export function formatPrice(amount: number, currency = "USD") {
-  return new Intl.NumberFormat("en-US", {
+export function formatPrice(amount: number, currency = "PKR") {
+  return new Intl.NumberFormat("en-PK", {
     style: "currency",
     currency,
+    maximumFractionDigits: 0,
   }).format(amount);
 }
 

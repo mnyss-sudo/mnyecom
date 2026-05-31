@@ -34,7 +34,6 @@ export default async function ProductDetailPage({ params }: Props) {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const category = product.categories as { name?: string; slug?: string } | null;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -44,7 +43,7 @@ export default async function ProductDetailPage({ params }: Props) {
     offers: {
       "@type": "Offer",
       price: product.price,
-      priceCurrency: "USD",
+      priceCurrency: "PKR",
       availability:
         product.stock > 0
           ? "https://schema.org/InStock"
@@ -63,14 +62,13 @@ export default async function ProductDetailPage({ params }: Props) {
         <Link href="/products" className="hover:text-slate-900">
           Products
         </Link>
-        {category?.slug && (
-          <>
-            <span className="mx-2">/</span>
-            <Link href={`/categories/${category.slug}`} className="hover:text-slate-900">
-              {category.name}
-            </Link>
-          </>
-        )}
+        <span className="mx-2">/</span>
+        <Link
+          href={`/categories/${product.category_slug}`}
+          className="hover:text-slate-900"
+        >
+          {product.category}
+        </Link>
         <span className="mx-2">/</span>
         <span className="text-slate-900">{product.name}</span>
       </nav>
@@ -90,7 +88,7 @@ export default async function ProductDetailPage({ params }: Props) {
         </div>
         <div>
           <p className="text-sm font-medium uppercase tracking-wide text-brand-600">
-            {category?.name ?? "Product"}
+            {product.category}
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             {product.name}

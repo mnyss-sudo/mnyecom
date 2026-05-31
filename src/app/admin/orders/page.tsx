@@ -12,7 +12,7 @@ export default async function AdminOrdersPage() {
   const supabase = await createClient();
   const { data: orders } = await supabase
     .from("orders")
-    .select("*")
+    .select("*, customers(full_name, email)")
     .order("created_at", { ascending: false });
 
   return (
@@ -23,7 +23,7 @@ export default async function AdminOrdersPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 text-slate-600">
               <tr>
-                <th className="px-4 py-3 font-medium">Date</th>
+                <th className="px-4 py-3 font-medium">Order</th>
                 <th className="px-4 py-3 font-medium">Customer</th>
                 <th className="px-4 py-3 font-medium">Total</th>
                 <th className="px-4 py-3 font-medium">Status</th>
@@ -37,21 +37,30 @@ export default async function AdminOrdersPage() {
                   </td>
                 </tr>
               ) : (
-                orders.map((order) => (
-                  <tr key={order.id} className="border-t border-slate-100">
-                    <td className="px-4 py-3 text-slate-500">
-                      {new Date(order.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-3">
-                      <p className="font-medium">{order.shipping_name}</p>
-                      <p className="text-xs text-slate-500">{order.shipping_email}</p>
-                    </td>
-                    <td className="px-4 py-3 font-medium">{formatPrice(order.total)}</td>
-                    <td className="px-4 py-3">
-                      <OrderStatusSelect orderId={order.id} status={order.status} />
-                    </td>
-                  </tr>
-                ))
+                orders.map((order) => {
+                  const customer = order.customers as {
+                    full_name?: string;
+                    email?: string;
+                  } | null;
+                  return (
+                    <tr key={order.id} className="border-t border-slate-100">
+                      <td className="px-4 py-3 font-mono text-xs">{order.order_number}</td>
+                      <td className="px-4 py-3">
+                        <p className="font-medium">{customer?.full_name ?? "—"}</p>
+                        <p className="text-xs text-slate-500">{customer?.email}</p>
+                      </td>
+                      <td className="px-4 py-3 font-medium">
+                        {formatPrice(Number(order.total))}
+                      </td>
+                      <td className="px-4 py-3">
+                        <OrderStatusSelect
+                          orderId={String(order.id)}
+                          status={order.order_status}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

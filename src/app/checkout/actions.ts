@@ -18,45 +18,61 @@ export async function placeOrder(
 
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
+  const phone = String(formData.get("phone") ?? "").trim();
   const address = String(formData.get("address") ?? "").trim();
   const city = String(formData.get("city") ?? "").trim();
-  const postal = String(formData.get("postal") ?? "").trim();
-  const country = String(formData.get("country") ?? "").trim();
+  const country = String(formData.get("country") ?? "Pakistan").trim();
 
-  if (!name || !email || !address || !city || !postal || !country) {
-    return { error: "Please fill in all shipping fields." };
+  if (!name || !email || !address || !city) {
+    return { error: "Please fill in all required fields." };
   }
-
-  const total = orderTotal(items);
 
   if (!isSupabaseConfigured()) {
     return {
       error:
-        "Supabase is not configured. Copy .env.example to .env.local and add your project keys to place orders.",
+        "Supabase is not configured. Add your project keys to place orders.",
     };
   }
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const subtotal = orderTotal(items);
+  const shippingCost = 0;
+  const total = subtotal + shippingCost;
+  const orderNumber = `SN-${Date.now()}`;
 
-  if (!user) {
-    return { error: "You must be signed in to place an order." };
+  const supabase = await createClient();
+
+  const { data: customer, error: customerError } = await supabase
+    .from("customers")
+    .upsert(
+      {
+        email,
+        full_name: name,
+        phone: phone || null,
+        address,
+        city,
+        country,
+      },
+      { onConflict: "email" },
+    )
+    .select("id")
+    .single();
+
+  if (customerError || !customer) {
+    return { error: customerError?.message ?? "Failed to save customer details." };
   }
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
-      user_id: user.id,
-      status: "pending",
+      customer_id: customer.id,
+      order_number: orderNumber,
+      subtotal,
+      shipping_cost: shippingCost,
       total,
-      shipping_name: name,
-      shipping_email: email,
-      shipping_address: address,
-      shipping_city: city,
-      shipping_postal: postal,
-      shipping_country: country,
+      payment_method: "Cash on Delivery",
+      payment_status: "Pending",
+      order_status: "Pending",
+      notes: phone ? `Phone: ${phone}` : null,
     })
     .select("id")
     .single();
@@ -67,11 +83,10 @@ export async function placeOrder(
 
   const orderItems = items.map((item) => ({
     order_id: order.id,
-    product_id: item.productId,
-    product_name: item.name,
-    product_slug: item.slug,
+    product_id: Number(item.productId),
     quantity: item.quantity,
     unit_price: item.price,
+    total_price: item.price * item.quantity,
   }));
 
   const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
@@ -80,5 +95,5 @@ export async function placeOrder(
     return { error: itemsError.message };
   }
 
-  return { orderId: order.id };
+  return { orderId: String(order.id) };
 }

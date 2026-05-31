@@ -9,4 +9,4 @@ compatibility_flags = ["nodejs_compat"]
 NEXT_PUBLIC_SUPABASE_URL = "https://ejlfcwjbmeczqtowsccm.supabase.co"
 NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqbGZjd2pibWVjenF0b3dzY2NtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMDkyOTUsImV4cCI6MjA5NTc4NTI5NX0.hMyyQ8JT83LYC_cWsnFYfKHzUPm9svxEA_az-3OdpLo"
 NEXT_PUBLIC_SITE_URL = "https://mnyecom.pages.dev"
-ADMIN_EMAIL = ""
+ADMIN_EMAIL = "mnysmartsolution@gmail.com"

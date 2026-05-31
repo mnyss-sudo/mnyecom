@@ -1,35 +1,28 @@
 # Cloudflare deployment
 
-This repo includes **`wrangler.toml`** with production Supabase URL, anon key, and site URL. Cloudflare Pages should pick these up on the next Git deploy. You can still mirror them in the dashboard if needed.
-
-Add these **environment variables** in your Cloudflare Pages project (Settings → Environment variables) if not using `wrangler.toml`:
+This repo includes **`wrangler.toml`** with production Supabase URL, anon key, site URL, and admin email. Cloudflare Pages should pick these up on the next Git deploy. You can still mirror them in the dashboard if needed.
 
 | Variable | Value |
 |----------|--------|
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://ejlfcwjbmeczqtowsccm.supabase.co` |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase **anon** key (Project Settings → API) |
-| `NEXT_PUBLIC_SITE_URL` | Your live site URL (e.g. `https://mnyecom.pages.dev`) |
-| `ADMIN_EMAIL` | Email you use to sign in for `/admin` access |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | *(see `wrangler.toml` or Supabase → API)* |
+| `NEXT_PUBLIC_SITE_URL` | `https://mnyecom.pages.dev` |
+| `ADMIN_EMAIL` | `mnysmartsolution@gmail.com` |
 
 ## Supabase Auth redirect
 
-In [Supabase Dashboard](https://supabase.com/dashboard) → Authentication → URL configuration, add:
+In [Supabase Dashboard](https://supabase.com/dashboard/project/ejlfcwjbmeczqtowsccm/auth/url-configuration):
 
-- **Site URL:** your Cloudflare URL
-- **Redirect URLs:** `https://your-site.pages.dev/auth/callback`
+- **Site URL:** `https://mnyecom.pages.dev`
+- **Redirect URLs:** `https://mnyecom.pages.dev/auth/callback`
 
 ## Admin access
 
-1. Sign up / sign in on the site with your email.
-2. In Supabase SQL Editor, run:
+Admin email is in the `public.admins` table and `ADMIN_EMAIL` in `wrangler.toml`.
 
-```sql
-INSERT INTO public.admins (email) VALUES ('you@example.com')
-ON CONFLICT (email) DO NOTHING;
-```
-
-Or set `ADMIN_EMAIL` in Cloudflare to match your login email.
+1. Sign up or sign in at `https://mnyecom.pages.dev/auth/signup` with **mnysmartsolution@gmail.com**
+2. Open **https://mnyecom.pages.dev/admin**
 
 ## Redeploy
 
-After saving env vars, trigger a new deployment so the build picks them up.
+After pulling the latest `main`, trigger a new Cloudflare Pages deployment so `ADMIN_EMAIL` is applied at build time.
